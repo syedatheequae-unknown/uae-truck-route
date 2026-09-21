@@ -5,32 +5,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: 'zulu'
           java-version: '17'
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.24.5'
-      - name: Fix project and Build
+      - name: Build APK
         run: |
-          echo "name: uae_truck_route
-          description: UAE Truck Route
-          publish_to: 'none'
-          version: 1.0.0+1
-          environment:
-            sdk: '>=3.0.0 <4.0.0'
-          dependencies:
-            flutter:
-              sdk: flutter
-            cupertino_icons: ^1.0.2
-          flutter:
-            uses-material-design: true" > pubspec.yaml
-          mkdir -p lib
-          if [! -f lib/main.dart ]; then echo "import 'package:flutter/material.dart'; void main()=>runApp(MaterialApp(home:Scaffold(body:Text('fix'))));" > lib/main.dart; fi
-          cp lib/main.dart /tmp/m.bak
-          flutter create . --project-name uae_truck_route --org com.uaetruck --platforms=android
-          cp /tmp/m.bak lib/main.dart
+          cp lib/main.dart /tmp/main.dart.bak
+          flutter create . --project-name uae_truck_route --org com.uaetruck --platforms android
+          cp /tmp/main.dart.bak lib/main.dart
           flutter pub get
           flutter build apk --release
       - uses: actions/upload-artifact@v4
